@@ -62,7 +62,13 @@ class NovaTranslationEditorController extends Controller
                 if (! isset($grouped[$realKey])) {
                     $grouped[$realKey] = [];
                 }
-                $grouped[$realKey][$lang] = $value;
+                $translationModel = app(config('translation-loader.model'));
+                $text = $translationModel::where('key', $realKey)->where('group', "frontend_$lang")->first();
+                if ($text && $text->text[$lang]) {
+                  $grouped[$realKey][$lang] = $text->text[$lang];
+                } else {
+                  $grouped[$realKey][$lang] = $value;
+                }
             }
         }
     }
